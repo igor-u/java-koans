@@ -1,14 +1,15 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "Please provide a parameter"
-  exit 1
-fi
+changed_files=$(git status --porcelain | awk '{print $2}')
 
-koanClass="$1"
+for file in $changed_files; do
 
-git add koans/src/$koanClass.java
+  git add "$file"
 
-git commit -m "ponder: $koanClass"
+  commit_message="ponder: $(echo "$file" | sed 's/^koans\/src\///' | sed 's/\.java$//')"
+
+  git commit -m "$commit_message"
+
+done
 
 exit 0
